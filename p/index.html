@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UniStore — abrir anúncio</title>
+
+<!--
+  Página de partilha da UniStore (GitHub Pages: /UniStore-painel/p/).
+
+  Porque é estática: os rastreadores do WhatsApp, Telegram e Facebook não executam
+  JavaScript, por isso não conseguem ler o anúncio a partir do ?id= da morada. O cartão
+  mostra a marca; o nome e o preço vão no texto da mensagem, que a app escreve.
+  Quem toca é que é levado ao anúncio (por deep link unistore://produto/<id>).
+
+  Mantido em sincronia com a app em: PerfumesMoz/public/p/index.html
+    · og:image  → p/preview.jpg (1200x630). O ?v=2 é para o WhatsApp esquecer a imagem antiga.
+    · Ao mudar de domínio, actualize og:image e og:url.
+-->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="UniStore">
+<meta property="og:locale" content="pt_MZ">
+<meta property="og:title" content="UniStore — compre com confiança">
+<meta property="og:description" content="Encontre o que procura em lojas com vendedores verificados. Toque para abrir o anúncio.">
+<meta property="og:image" content="https://euclides-uncom.github.io/UniStore-painel/p/preview.jpg?v=2">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="UniStore — compre com confiança">
+<meta property="og:url" content="https://euclides-uncom.github.io/UniStore-painel/p/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#4A0E73">
+
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background: radial-gradient(120% 90% at 50% 0%, #3A0A56 0%, #1B0528 60%, #12040D 100%);
+         color:#f4eefc; min-height:100vh; display:flex;
+         align-items:center; justify-content:center; padding:24px; text-align:center; }
+  main { max-width:420px; width:100%; }
+  .mark { width:76px; height:76px; margin:0 auto 18px; display:block; }
+  h1 { font-size:22px; margin:0 0 8px; letter-spacing:-0.2px; }
+  p { color:#cbb8e0; line-height:1.5; margin:0 0 18px; }
+  a.btn { display:block; padding:16px; border-radius:14px; text-decoration:none;
+          font-weight:600; font-size:17px; margin:12px 0; }
+  a.primary { background:#6D28D9; color:#fff; }
+  a.secondary { background:transparent; color:#d9c6f2; border:1px solid #4B3566; }
+  small { display:block; color:#9c86b8; margin-top:18px; line-height:1.4; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<main>
+  <!-- Símbolo oficial: saco com a inicial U (mesmo desenho da app) -->
+  <svg class="mark" viewBox="19 17 70 72" fill="none" stroke="#FFFFFF"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M42.6,46.5 L42.6,35.1 A11.4,11.4 0 0 1 65.4,35.1 L65.4,46.5" stroke-width="4.0"/>
+    <path d="M38,40.5 L70,40.5 A3,3 0 0 1 73,43.5 L76.2,77.9 A4.6,4.6 0 0 1 71.6,82.5 L36.4,82.5 A4.6,4.6 0 0 1 31.8,77.9 L35,43.5 A3,3 0 0 1 38,40.5 Z" stroke-width="4.0"/>
+    <path d="M39.7,48.4 a2.8,2.8 0 1 0 5.6,0 a2.8,2.8 0 1 0 -5.6,0" stroke-width="2"/>
+    <path d="M62.7,48.4 a2.8,2.8 0 1 0 5.6,0 a2.8,2.8 0 1 0 -5.6,0" stroke-width="2"/>
+    <path d="M46,57 L46,62 A8,8 0 0 0 62,62 L62,57" stroke-width="4.2"/>
+  </svg>
+
+  <h1 id="title">Abrir na UniStore</h1>
+  <p id="subtitle">A abrir o anúncio na aplicação…</p>
+
+  <a id="open" class="btn primary" href="#">Abrir na aplicação</a>
+  <a id="install" class="btn secondary hidden"
+     href="https://github.com/euclides-uncom/PerfumesMoz/releases/download/debug-latest/UniStore-debug.apk">Instalar a UniStore</a>
+
+  <small id="hint">Se a aplicação não abrir, instale-a primeiro e volte a tocar neste link.
+    Requer Android 8 ou superior.</small>
+
+  <noscript>
+    <small>Sem JavaScript não é possível abrir a aplicação automaticamente.
+      <a href="https://github.com/euclides-uncom/PerfumesMoz/releases/download/debug-latest/UniStore-debug.apk"
+         style="color:#C39BE8">Instale a UniStore aqui.</a></small>
+  </noscript>
+</main>
+
+<script>
+(function () {
+  var id = (new URLSearchParams(location.search).get('id') || '').trim();
+  if (!id) {
+    // também aceita .../p/<id>, como a app
+    var parts = location.pathname.replace(/\/+$/, '').split('/');
+    var last = parts[parts.length - 1];
+    if (last && last !== 'p' && last !== 'index.html') id = decodeURIComponent(last);
+  }
+
+  var open = document.getElementById('open');
+  var install = document.getElementById('install');
+  var title = document.getElementById('title');
+  var subtitle = document.getElementById('subtitle');
+  var hint = document.getElementById('hint');
+
+  if (!id) {
+    title.textContent = 'Link incompleto';
+    subtitle.textContent = 'Este link não traz o anúncio. Peça a quem partilhou para enviar novamente.';
+    open.classList.add('hidden');
+    hint.classList.add('hidden');
+    install.classList.remove('hidden');
+    return;
+  }
+
+  var deepLink = 'unistore://produto/' + encodeURIComponent(id);
+
+  // A app pode não estar instalada: se a página continuar visível, mostramos a instalação.
+  setTimeout(function () {
+    if (document.hidden) return;
+    subtitle.textContent = 'Se nada aconteceu, toque em “Abrir na aplicação”. Se ainda não tem a app, instale-a abaixo.';
+    install.classList.remove('hidden');
+  }, 1500);
+
+  open.href = deepLink;
+  // Abre o anúncio na app; sem app instalada, o browser fica nesta página.
+  location.href = deepLink;
+})();
+</script>
+</body>
+</html>
